@@ -3,13 +3,15 @@
  * HC Marcenaria
  *
  * Gerencia todas as interações da interface:
- * upload de arquivo, preview da tabela, botões de download.
+ * upload de arquivo, preview da tabela, botão de download.
+ *
+ * v0.1 — todas as peças vão para um único .sct, sem separação por material
  */
 
-// ─── Estado ───────────────────────────────────────────────────────────────
+// ─── Estado global ────────────────────────────────────────────────────────
 let allPieces = [];
 
-// ─── Elementos ────────────────────────────────────────────────────────────
+// ─── Referências aos elementos da página ─────────────────────────────────
 const fileInput   = document.getElementById('fileInput');
 const uploadZone  = document.getElementById('uploadZone');
 const fileName    = document.getElementById('fileName');
@@ -17,16 +19,16 @@ const previewWrap = document.getElementById('previewWrap');
 const tableBody   = document.getElementById('tableBody');
 const summaryEl   = document.getElementById('summary');
 const statusEl    = document.getElementById('status');
-const btn15       = document.getElementById('btn15');
-const btn18       = document.getElementById('btn18');
+const btnDownload = document.getElementById('btnDownload');  // único botão de download
 const btnReset    = document.getElementById('btnReset');
 
-// ─── Helpers ──────────────────────────────────────────────────────────────
+// ─── Exibe mensagem de status (ok ou erro) ────────────────────────────────
 function showStatus(msg, type) {
   statusEl.textContent = msg;
   statusEl.className   = 'status ' + type;
 }
 
+// ─── Lê o tamanho da chapa configurado pelo usuário ──────────────────────
 function getSheetSize() {
   return {
     w: parseInt(document.getElementById('sheetW').value) || 2750,
@@ -34,39 +36,34 @@ function getSheetSize() {
   };
 }
 
-// ─── Render preview ───────────────────────────────────────────────────────
+// ─── Renderiza a tabela de preview com todas as peças ────────────────────
 function renderPreview(pieces) {
-  const p15    = pieces.filter(p => p.thickness === 15);
-  const p18    = pieces.filter(p => p.thickness === 18);
-  const total  = pieces.reduce((s, p) => s + p.qty, 0);
-  const total15 = p15.reduce((s, p) => s + p.qty, 0);
-  const total18 = p18.reduce((s, p) => s + p.qty, 0);
+  // Calcula total de peças (somando quantidades)
+  const total = pieces.reduce((sum, p) => sum + p.qty, 0);
 
-  // Resumo
+  // Resumo no topo da tabela
   summaryEl.innerHTML = `
+    <div class="summary-item">
+      <span class="s-label">Grupos</span>
+      <span class="s-value">${pieces.length}</span>
+    </div>
     <div class="summary-item">
       <span class="s-label">Total de peças</span>
       <span class="s-value">${total}</span>
     </div>
     <div class="summary-item">
-      <span class="s-label">MDF 15mm</span>
-      <span class="s-value">${total15}</span>
-    </div>
-    <div class="summary-item">
-      <span class="s-label">MDF 18mm</span>
-      <span class="s-value">${total18}</span>
+      <span class="s-label">Arquivo gerado</span>
+      <span class="s-value">1 .sct</span>
     </div>
   `;
 
-  // Tabela
+  // Preenche a tabela linha por linha
   tableBody.innerHTML = '';
   pieces.forEach((p, i) => {
-    const tagClass = p.thickness === 15 ? 'tag-15' : 'tag-18';
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td style="color:var(--muted)">${i + 1}</td>
       <td>${p.name}</td>
-      <td><span class="tag ${tagClass}">${p.thickness}mm</span></td>
       <td>${p.width}</td>
       <td>${p.height}</td>
       <td style="color:var(--accent2);font-weight:600">${p.qty}</td>
@@ -74,24 +71,27 @@ function renderPreview(pieces) {
     tableBody.appendChild(tr);
   });
 
+  // Mostra a seção de preview e ativa o botão de download
   previewWrap.classList.add('visible');
-  btn15.disabled = p15.length === 0;
-  btn18.disabled = p18.length === 0;
+  btnDownload.disabled = false;
 
   showStatus(`✓ ${pieces.length} grupos lidos — ${total} peças no total`, 'ok');
 }
 
-// ─── Processar arquivo ────────────────────────────────────────────────────
+// ─── Processa o arquivo carregado pelo usuário ────────────────────────────
 function processFile(file) {
   if (!file) return;
 
-  fileName.textContent  = file.name;
+  // Atualiza a zona de upload com o nome do arquivo
+  fileName.textContent   = file.name;
   fileName.style.display = 'block';
   uploadZone.classList.add('has-file');
 
+  // Lê o conteúdo do arquivo como texto
   const reader = new FileReader();
   reader.onload = e => {
-    allPieces = parseFile(e.target.result);  // parser.js
+    // Chama o parser (parser.js) para interpretar o conteúdo
+    allPieces = parseFile(e.target.result);
 
     if (allPieces.length === 0) {
       showStatus('✗ Nenhuma peça reconhecida. Verifique o formato do arquivo.', 'err');
@@ -103,9 +103,12 @@ function processFile(file) {
   reader.readAsText(file, 'UTF-8');
 }
 
-// ─── Eventos ──────────────────────────────────────────────────────────────
+// ─── Eventos de upload ────────────────────────────────────────────────────
+
+// Clique no input de arquivo
 fileInput.addEventListener('change', e => processFile(e.target.files[0]));
 
+// Drag and drop — previne comportamento padrão do browser
 uploadZone.addEventListener('dragover', e => {
   e.preventDefault();
   uploadZone.classList.add('drag');
@@ -121,28 +124,26 @@ uploadZone.addEventListener('drop', e => {
   processFile(e.dataTransfer.files[0]);
 });
 
-btn15.addEventListener('click', () => {
+// ─── Botão download — gera único .sct com todas as peças ─────────────────
+btnDownload.addEventListener('click', () => {
   const { w, h } = getSheetSize();
-  const p15 = allPieces.filter(p => p.thickness === 15);
-  const sct = generateSCT(p15, w, h);   // generator.js
-  downloadFile(sct, 'plano_15mm.sct');  // generator.js
+
+  // Chama o gerador (generator.js) com todas as peças
+  const sct = generateSCT(allPieces, w, h);
+
+  // Usa o nome do arquivo original como base para o nome do .sct
+  const baseName = fileName.textContent.replace(/\.[^.]+$/, '');
+  downloadFile(sct, `${baseName}.sct`);
 });
 
-btn18.addEventListener('click', () => {
-  const { w, h } = getSheetSize();
-  const p18 = allPieces.filter(p => p.thickness === 18);
-  const sct = generateSCT(p18, w, h);
-  downloadFile(sct, 'plano_18mm.sct');
-});
-
+// ─── Botão limpar — reseta tudo para o estado inicial ────────────────────
 btnReset.addEventListener('click', () => {
-  allPieces = [];
+  allPieces              = [];
   fileInput.value        = '';
-  fileName.style.display  = 'none';
+  fileName.style.display = 'none';
   uploadZone.classList.remove('has-file');
   previewWrap.classList.remove('visible');
   tableBody.innerHTML    = '';
   statusEl.className     = 'status';
-  btn15.disabled         = true;
-  btn18.disabled         = true;
+  btnDownload.disabled   = true;
 });

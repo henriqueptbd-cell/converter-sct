@@ -14,7 +14,7 @@
     <span class="label">HC Marcenaria — Ferramentas</span>
     <h1>Conversor de Lista<br>para Plano de Corte</h1>
     <p>Importa lista de peças (.txt / .csv) e gera arquivo .sct para o SketchCut</p>
-    <span class="version">v0.0 — formato MDF Branco</span>
+    <span class="version">v0.1 — arquivo único, todos os materiais</span>
   </header>
 
   <!-- CONFIGURAÇÃO DA CHAPA -->
@@ -44,6 +44,7 @@
       <span class="file-name" id="fileName" style="display:none"></span>
     </div>
 
+    <!-- Preview só aparece depois de carregar um arquivo válido -->
     <div class="preview-wrap" id="previewWrap">
       <div class="summary" id="summary"></div>
       <div class="table-scroll">
@@ -52,7 +53,6 @@
             <tr>
               <th>#</th>
               <th>Nome</th>
-              <th>Espessura</th>
               <th>Largura</th>
               <th>Altura</th>
               <th>Qtd</th>
@@ -70,19 +70,18 @@
   <div class="card">
     <span class="card-title">Exportar</span>
     <div class="btn-row">
-      <button class="btn-primary" id="btn15" disabled>⬇ Baixar .SCT — 15mm</button>
-      <button class="btn-primary" id="btn18" disabled>⬇ Baixar .SCT — 18mm</button>
+      <button class="btn-primary" id="btnDownload" disabled>⬇ Baixar .SCT</button>
       <button class="btn-secondary" id="btnReset">↺ Limpar</button>
     </div>
   </div>
 
   <div class="divider"></div>
 
-  <footer>HC MARCENARIA — CONVERSOR SCT v0.0 — FORMATO SKETCHCUT VALIDADO</footer>
+  <footer>HC MARCENARIA — CONVERSOR SCT v0.1 — FORMATO SKETCHCUT VALIDADO</footer>
 
 </div>
 
-<!-- Scripts: ordem importa (parser e generator antes do ui) -->
+<!-- Ordem de carregamento importa: parser e generator precisam estar prontos antes do ui -->
 <script src="js/parser.js"></script>
 <script src="js/generator.js"></script>
 <script src="js/ui.js"></script>
