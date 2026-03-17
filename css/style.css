@@ -1,0 +1,309 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
+
+/* ─── VARIÁVEIS ─────────────────────────────────────────────────────────── */
+:root {
+  --bg:       #0f0e0d;
+  --surface:  #1a1916;
+  --border:   #2e2c28;
+  --accent:   #c8922a;
+  --accent2:  #e8b866;
+  --text:     #e8e4dc;
+  --muted:    #7a7567;
+  --success:  #5a9e6f;
+  --error:    #c0574a;
+  --mono:     'IBM Plex Mono', monospace;
+  --sans:     'IBM Plex Sans', sans-serif;
+}
+
+/* ─── RESET ─────────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ─── BASE ──────────────────────────────────────────────────────────────── */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 24px;
+}
+
+/* grain overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── LAYOUT ────────────────────────────────────────────────────────────── */
+.wrap {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* ─── HEADER ────────────────────────────────────────────────────────────── */
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-left: 3px solid var(--accent);
+  padding-left: 16px;
+}
+
+header .label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+header h1 {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+header p {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 300;
+  margin-top: 2px;
+}
+
+.version {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--border);
+  letter-spacing: 0.1em;
+  margin-top: 4px;
+}
+
+/* ─── CARD ──────────────────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ─── CONFIG ────────────────────────────────────────────────────────────── */
+.config-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+}
+
+.field input {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 14px;
+  padding: 10px 12px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.field input:focus {
+  border-color: var(--accent);
+}
+
+/* ─── UPLOAD ────────────────────────────────────────────────────────────── */
+.upload-zone {
+  border: 1px dashed var(--border);
+  border-radius: 4px;
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  text-align: center;
+  position: relative;
+}
+
+.upload-zone:hover,
+.upload-zone.drag {
+  border-color: var(--accent);
+  background: rgba(200, 146, 42, 0.04);
+}
+
+.upload-zone.has-file {
+  border-color: var(--success);
+  background: rgba(90, 158, 111, 0.04);
+}
+
+.upload-zone input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+.upload-icon { font-size: 32px; line-height: 1; }
+
+.upload-zone .upload-text  { font-size: 14px; color: var(--muted); }
+.upload-zone .upload-hint  { font-family: var(--mono); font-size: 11px; color: var(--border); letter-spacing: 0.05em; }
+.upload-zone .file-name    { font-family: var(--mono); font-size: 13px; color: var(--success); }
+
+/* ─── PREVIEW ───────────────────────────────────────────────────────────── */
+.preview-wrap { display: none; flex-direction: column; gap: 12px; }
+.preview-wrap.visible { display: flex; }
+
+.table-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+
+table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 12px; }
+
+th {
+  background: var(--bg);
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  font-weight: 400;
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+td {
+  padding: 7px 12px;
+  border-bottom: 1px solid rgba(46,44,40,0.5);
+  color: var(--text);
+  white-space: nowrap;
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* ─── TAGS ──────────────────────────────────────────────────────────────── */
+.tag { display: inline-block; padding: 2px 7px; border-radius: 2px; font-size: 10px; letter-spacing: 0.05em; }
+.tag-15 { background: rgba(200,146,42,0.15); color: var(--accent2); }
+.tag-18 { background: rgba(90,120,200,0.15); color: #8aacdc; }
+
+/* ─── SUMMARY ───────────────────────────────────────────────────────────── */
+.summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.summary-item {
+  background: var(--bg);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.summary-item .s-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.summary-item .s-value {
+  font-family: var(--mono);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--accent2);
+  line-height: 1;
+}
+
+/* ─── BOTÕES ────────────────────────────────────────────────────────────── */
+.btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+
+button {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 12px 24px;
+  border-radius: 3px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary { background: var(--accent); color: #0f0e0d; font-weight: 600; }
+.btn-primary:hover { background: var(--accent2); }
+.btn-primary:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+
+.btn-secondary { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+.btn-secondary:hover { border-color: var(--muted); color: var(--text); }
+
+/* ─── STATUS ────────────────────────────────────────────────────────────── */
+.status { font-family: var(--mono); font-size: 12px; padding: 10px 14px; border-radius: 3px; display: none; }
+.status.ok  { display: block; background: rgba(90,158,111,0.1);  border: 1px solid rgba(90,158,111,0.3); color: var(--success); }
+.status.err { display: block; background: rgba(192,87,74,0.1);   border: 1px solid rgba(192,87,74,0.3);  color: var(--error); }
+
+/* ─── FOOTER ────────────────────────────────────────────────────────────── */
+footer { font-family: var(--mono); font-size: 10px; color: var(--border); letter-spacing: 0.08em; text-align: center; }
+
+.divider { height: 1px; background: var(--border); width: 100%; }

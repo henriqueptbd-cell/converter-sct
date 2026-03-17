@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conversor SCT — HC Marcenaria</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header>
+    <span class="label">HC Marcenaria — Ferramentas</span>
+    <h1>Conversor de Lista<br>para Plano de Corte</h1>
+    <p>Importa lista de peças (.txt / .csv) e gera arquivo .sct para o SketchCut</p>
+    <span class="version">v0.0 — formato MDF Branco</span>
+  </header>
+
+  <!-- CONFIGURAÇÃO DA CHAPA -->
+  <div class="card">
+    <span class="card-title">Configuração da Chapa</span>
+    <div class="config-row">
+      <div class="field">
+        <label>LARGURA (mm)</label>
+        <input type="number" id="sheetW" value="2750">
+      </div>
+      <div class="field">
+        <label>ALTURA (mm)</label>
+        <input type="number" id="sheetH" value="1850">
+      </div>
+    </div>
+  </div>
+
+  <!-- UPLOAD E PREVIEW -->
+  <div class="card">
+    <span class="card-title">Arquivo de Entrada</span>
+
+    <div class="upload-zone" id="uploadZone">
+      <input type="file" id="fileInput" accept=".txt,.csv">
+      <span class="upload-icon">📂</span>
+      <span class="upload-text">Arraste o arquivo aqui ou clique para selecionar</span>
+      <span class="upload-hint">.TXT ou .CSV — lista de peças separada por ponto e vírgula</span>
+      <span class="file-name" id="fileName" style="display:none"></span>
+    </div>
+
+    <div class="preview-wrap" id="previewWrap">
+      <div class="summary" id="summary"></div>
+      <div class="table-scroll">
+        <table id="previewTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nome</th>
+              <th>Espessura</th>
+              <th>Largura</th>
+              <th>Altura</th>
+              <th>Qtd</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="status" id="status"></div>
+  </div>
+
+  <!-- EXPORTAR -->
+  <div class="card">
+    <span class="card-title">Exportar</span>
+    <div class="btn-row">
+      <button class="btn-primary" id="btn15" disabled>⬇ Baixar .SCT — 15mm</button>
+      <button class="btn-primary" id="btn18" disabled>⬇ Baixar .SCT — 18mm</button>
+      <button class="btn-secondary" id="btnReset">↺ Limpar</button>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <footer>HC MARCENARIA — CONVERSOR SCT v0.0 — FORMATO SKETCHCUT VALIDADO</footer>
+
+</div>
+
+<!-- Scripts: ordem importa (parser e generator antes do ui) -->
+<script src="js/parser.js"></script>
+<script src="js/generator.js"></script>
+<script src="js/ui.js"></script>
+
+</body>
+</html>
