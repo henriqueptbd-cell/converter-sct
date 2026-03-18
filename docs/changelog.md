@@ -3,48 +3,52 @@
 Histórico de versões, decisões técnicas e aprendizados do projeto.
 
 ---
-## [v0.4] — 2025
 
-### Adicionado
-- Nomes das peças no arquivo .sct gerado
-- Espaços no nome substituídos por traço (ex: "base inferior" → "base-inferior")
+## [v1.0] — 2025 — Versão Estável
 
-### Alterado
-- `generator.js` — nova função `sanitizeName()` que trata espaços no nome
-- `generator.js` — linha de código da peça agora é `10nome` em vez de `10` fixo
+### Resumo
+Primeira versão estável do Conversor SCT. Todas as funcionalidades principais implementadas e validadas com projetos reais de marcenaria.
 
-### Formato validado
-O nome é concatenado diretamente na linha do código da peça:
-- `10`          → sem nome
-- `10base`      → nome "base"
-- `10base-inf`  → nome com espaço sanitizado
-Acentos e caracteres especiais (ç, ã, é) aceitos pelo SketchCut.
+### Funcionalidades entregues
+- Conversão de lista do Promob (.txt) para .sct do SketchCut
+- Separação automática por material (tipo + cor + espessura)
+- Fitagem de bordas (0.4mm e 2mm, todos os lados)
+- Nomes das peças no .sct
+- Interface responsiva — PC e celular
+- Download individual por material
+
+### Ajustes finais
+- `style.css` — responsivo mobile: padding reduzido, botões maiores, fonte 16px nos inputs (evita zoom no iOS), hint de arrastar escondido no celular
+- `style.css` — versão e footer com cor e tamanho legíveis
+
+### Limitações conhecidas
+- Nomes das peças no plano gráfico requerem SketchCut PRO (versão mobile gratuita mostra apenas na lista)
+- Dimensões decimais arredondadas para baixo (ex: 794.5 → 794)
+- Sulcos não preenchidos (fora do escopo atual)
 
 ---
 
+## [v0.4] — 2025
+
+### Adicionado
+- Nomes das peças no arquivo .sct — campo `10nome` validado por engenharia reversa
+- Espaços substituídos por traço (ex: "base inferior" → "base-inferior")
+- Acentos e caracteres especiais (ç, ã, é) aceitos pelo SketchCut
+
+### Alterado
+- `generator.js` — nova função `sanitizeName()` e campo `10nome` dinâmico
+
+---
 
 ## [v0.3] — 2025
 
 ### Adicionado
-- Suporte a fitagem de bordas no arquivo .sct gerado
-- Campo `AXB_0X0` agora reflete as fitas configuradas no Promob
+- Fitagem de bordas no .sct — campo `AXB_0X0` gerado dinamicamente
 
-### Alterado
-- `parser.js` — nova função `calcEdge()` que converte os campos de borda `[5][6][7][8]` para o valor do SketchCut
-- `parser.js` — `parseLine()` agora extrai `edgeComp` e `edgeLarg` de cada peça
-- `generator.js` — campo de fitagem `AXB_0X0` gerado dinamicamente em vez de fixo `0X0_0X0`
+### Lógica validada
+Fórmula por eixo: `valor = (n_2mm × 1) + (n_04mm × 2) + (n_04mm > 0 ? 1 : 0)`
 
-### Lógica de fitagem validada
-Descoberta por engenharia reversa com 6 arquivos de teste gerados pelo SketchCut.
-
-O campo `AXB_0X0` onde:
-- `A` = valor do eixo Comprimento
-- `B` = valor do eixo Largura
-- `_0X0` = sulcos (não utilizado)
-
-Fórmula por eixo: `valor = (n_lados_2mm × 1) + (n_lados_04mm × 2) + (n_lados_04mm > 0 ? 1 : 0)`
-
-| Configuração do eixo | Valor |
+| Configuração | Valor |
 |---|---|
 | sem fita | 0 |
 | 1 lado 2mm | 1 |
@@ -53,64 +57,50 @@ Fórmula por eixo: `valor = (n_lados_2mm × 1) + (n_lados_04mm × 2) + (n_lados_
 | 2 lados 0.4mm | 4 |
 | 1 lado 2mm + 1 lado 0.4mm | 5 |
 
-Campos do Promob:
-- `[5]` e `[6]` → Comprimento → calcula `A`
-- `[7]` e `[8]` → Largura → calcula `B`
+Campos do Promob: `[5][6]` → Comprimento → `A` / `[7][8]` → Largura → `B`
+
+### Alterado
+- `parser.js` — função `calcEdge()` e extração de `edgeComp` / `edgeLarg`
+- `generator.js` — campo de fitagem dinâmico
 
 ---
 
 ## [v0.2] — 2025
 
 ### Adicionado
-- Separação automática de peças por material (tipo + cor + espessura)
-- Lista de arquivos gerados — um card por material com botão de download individual
-- Nome do arquivo .sct inclui material: ex `nilma_guarda_roupa_MDF_Branco_15mm.sct`
-- Linha separadora por material na tabela de preview
+- Separação por material (tipo + cor + espessura)
+- Lista de downloads — um card por material, botão individual
+- Nome do arquivo .sct inclui material: ex `nilma_MDF_Branco_15mm.sct`
 
 ### Alterado
-- `parser.js` — nova função `parseMaterial()` que extrai tipo, cor e espessura do campo [1]
-- `parser.js` — `parseFile()` agora retorna grupos por material em vez de array flat
-- `ui.js` — substituído botão único por lista dinâmica de downloads por material
-- `index.html` — novo card "Arquivos Gerados"
-- `style.css` — estilos dos cards de download individual
+- `parser.js` — função `parseMaterial()` e agrupamento por material
+- `ui.js` — lista dinâmica de downloads
+- `index.html` + `style.css` — card de arquivos gerados
 
 ### Validado com
-- `nilma_guarda_roupa.txt` — 3 materiais, 97 peças, 3 arquivos .sct gerados
+- `nilma_guarda_roupa.txt` — 3 materiais, 97 peças, 3 arquivos .sct
 
 ---
 
 ## [v0.1] — 2025
 
 ### Corrigido
-- `parser.js` — índices das colunas corrigidos: largura `[2]`, altura `[3]`, quantidade `[4]`
-- `parser.js` — `Math.floor(parseFloat(...))` para decimais (ex: `794.5` → `794`)
+- `parser.js` — índices corretos: largura `[2]`, altura `[3]`, quantidade `[4]`
+- `parser.js` — `Math.floor(parseFloat(...))` para decimais
 
 ---
 
 ## [v0.0] — 2025
 
 ### Adicionado
-- Interface web completa HTML/CSS/JS
+- Interface web HTML/CSS/JS puro
 - Upload, preview, geração e download do .sct
 - Estrutura de pastas `css/`, `js/`, `docs/`
 
 ### Como o formato .sct foi descoberto
-Engenharia reversa com 4 arquivos do SketchCut.
-Detalhe crítico: **5 linhas em branco** entre `1X4X10_True` e o `2`.
-
----
-
-## Roadmap
-
-| Versão | Funcionalidade | Status |
-|--------|---------------|--------|
-| v0.0 | Conversão básica | ✅ |
-| v0.1 | Parser corrigido | ✅ |
-| v0.2 | Separação por material | ✅ |
-| v0.3 | Fitagem de bordas | ✅ |
-| v0.4 | Nomes das peças no .sct | ✅ |
-| v0.4 | Histórico de conversões | 🔜 |
-| v1.0 | Versão estável — GitHub Pages | 🔜 |
+Engenharia reversa com 4 arquivos do SketchCut (1, 5, 15 peças e vazio).
+Detalhe crítico: **5 linhas em branco** entre `1X4X10_True` e o `2` no cabeçalho.
+Validado: posições dummy `111_-1X10X10` são aceitas — SketchCut recalcula ao otimizar.
 
 ---
 
