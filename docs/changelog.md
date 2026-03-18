@@ -3,6 +3,25 @@
 Histórico de versões, decisões técnicas e aprendizados do projeto.
 
 ---
+## [v0.4] — 2025
+
+### Adicionado
+- Nomes das peças no arquivo .sct gerado
+- Espaços no nome substituídos por traço (ex: "base inferior" → "base-inferior")
+
+### Alterado
+- `generator.js` — nova função `sanitizeName()` que trata espaços no nome
+- `generator.js` — linha de código da peça agora é `10nome` em vez de `10` fixo
+
+### Formato validado
+O nome é concatenado diretamente na linha do código da peça:
+- `10`          → sem nome
+- `10base`      → nome "base"
+- `10base-inf`  → nome com espaço sanitizado
+Acentos e caracteres especiais (ç, ã, é) aceitos pelo SketchCut.
+
+---
+
 
 ## [v0.3] — 2025
 
@@ -89,6 +108,7 @@ Detalhe crítico: **5 linhas em branco** entre `1X4X10_True` e o `2`.
 | v0.1 | Parser corrigido | ✅ |
 | v0.2 | Separação por material | ✅ |
 | v0.3 | Fitagem de bordas | ✅ |
+| v0.4 | Nomes das peças no .sct | ✅ |
 | v0.4 | Histórico de conversões | 🔜 |
 | v1.0 | Versão estável — GitHub Pages | 🔜 |
 

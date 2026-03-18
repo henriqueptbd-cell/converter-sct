@@ -1,7 +1,7 @@
 # Conversor SCT
 **Conversor de lista de peças (Promob) para plano de corte (SketchCut)**
 
-![Versão](https://img.shields.io/badge/versão-0.3-c8922a)
+![Versão](https://img.shields.io/badge/versão-0.4-c8922a)
 ![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
 ![Licença](https://img.shields.io/badge/licença-MIT-green)
 
@@ -52,11 +52,12 @@ Este conversor faz a ponte entre os dois: lê o arquivo exportado pelo Promob e 
 
 ## Funcionalidades
 
-### v0.3 (atual)
+### v0.4 (atual)
 - [x] Upload de arquivo `.txt` / `.csv`
 - [x] Parser da lista de peças do Promob
 - [x] Separação automática por material (tipo + cor + espessura)
 - [x] Preview da lista em tabela com separadores por material
+- [x] Nomes das peças no .sct (espaços substituídos por traço)
 - [x] Suporte a fitagem de bordas (0.4mm e 2mm, todos os lados)
 - [x] Geração do `.sct` compatível com SketchCut
 - [x] Download individual por material
@@ -71,7 +72,7 @@ Este conversor faz a ponte entre os dois: lê o arquivo exportado pelo Promob e 
 | v0.1 | Parser corrigido | ✅ |
 | v0.2 | Separação por material | ✅ |
 | v0.3 | Fitagem de bordas | ✅ |
-| v0.4 | Nomes das peças no .sct | 🔜 |
+| v0.4 | Nomes das peças no .sct | ✅ |
 | v0.5 | Edição da lista — adicionar, remover e editar peças | 🔜 |
 | v0.6 | Histórico de conversões | 🔜 |
 | v1.0 | Versão estável — GitHub Pages | 🔜 |

@@ -11,6 +11,18 @@
  */
 
 /**
+ * Sanitiza o nome da peça para uso no .sct.
+ * Espaços são substituídos por traço — mais seguro e universal.
+ *
+ * @param {string} name - Nome original da peça
+ * @returns {string} Nome sanitizado
+ */
+function sanitizeName(name) {
+  if (!name) return '';
+  return name.trim().replace(/\s+/g, '-');
+}
+
+/**
  * Gera o conteúdo de um arquivo .sct para o SketchCut.
  *
  * As peças são inseridas com posição dummy (111_-1X10X10).
@@ -21,7 +33,10 @@
  *   B = valor do eixo Largura    (calculado pelo parser)
  *   _0X0 = sulcos (não utilizado)
  *
- * @param {Array}  pieces  - Array de objetos { width, height, qty, edgeComp, edgeLarg }
+ * Nome: concatenado direto no "10" → ex: "10base", "10lateral"
+ * Peça sem nome → "10"
+ *
+ * @param {Array}  pieces  - Array de objetos { width, height, qty, edgeComp, edgeLarg, name }
  * @param {number} sheetW  - Largura da chapa em mm
  * @param {number} sheetH  - Altura da chapa em mm
  * @returns {string} Conteúdo do arquivo .sct
@@ -57,12 +72,14 @@ function generateSCT(pieces, sheetW = 2750, sheetH = 1850) {
     lines.push(`${piece.width}X${piece.height}X${piece.qty}`);
 
     // Campo de fitagem: AXB_0X0
-    // A = eixo Comprimento, B = eixo Largura, _0X0 = sulcos (fixo)
     const edgeA = piece.edgeComp || 0;
     const edgeB = piece.edgeLarg || 0;
     lines.push(`${edgeA}X${edgeB}_0X0`);
 
-    lines.push('10');
+    // Nome: "10" + nome sanitizado (espaços viram traço)
+    // Peça sem nome → só "10"
+    const name = sanitizeName(piece.name);
+    lines.push(`10${name}`);
 
     // Posição dummy para cada unidade — SketchCut reorganiza ao otimizar
     for (let i = 0; i < piece.qty; i++) {
