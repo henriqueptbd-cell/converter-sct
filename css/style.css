@@ -307,3 +307,56 @@ button {
 footer { font-family: var(--mono); font-size: 10px; color: var(--border); letter-spacing: 0.08em; text-align: center; }
 
 .divider { height: 1px; background: var(--border); width: 100%; }
+
+/* ─── DOWNLOAD LIST (v0.2) ──────────────────────────────────────────────── */
+#downloadList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.download-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 12px 16px;
+  gap: 16px;
+  transition: border-color 0.15s;
+}
+
+.download-item:hover {
+  border-color: var(--accent);
+}
+
+.download-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  overflow: hidden;
+}
+
+.download-name {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.download-count {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+}
+
+.btn-small {
+  padding: 8px 16px;
+  font-size: 11px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}

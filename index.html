@@ -9,12 +9,11 @@
 <body>
 <div class="wrap">
 
-  <!-- HEADER -->
   <header>
     <span class="label">HC Marcenaria — Ferramentas</span>
     <h1>Conversor de Lista<br>para Plano de Corte</h1>
-    <p>Importa lista de peças (.txt / .csv) e gera arquivo .sct para o SketchCut</p>
-    <span class="version">v0.1 — arquivo único, todos os materiais</span>
+    <p>Importa lista de peças (.txt / .csv) e gera arquivos .sct separados por material</p>
+    <span class="version">v0.2 — separação por material, cor e espessura</span>
   </header>
 
   <!-- CONFIGURAÇÃO DA CHAPA -->
@@ -44,7 +43,7 @@
       <span class="file-name" id="fileName" style="display:none"></span>
     </div>
 
-    <!-- Preview só aparece depois de carregar um arquivo válido -->
+    <!-- Preview da tabela de peças -->
     <div class="preview-wrap" id="previewWrap">
       <div class="summary" id="summary"></div>
       <div class="table-scroll">
@@ -66,25 +65,34 @@
     <div class="status" id="status"></div>
   </div>
 
-  <!-- EXPORTAR -->
-  <div class="card">
-    <span class="card-title">Exportar</span>
-    <div class="btn-row">
-      <button class="btn-primary" id="btnDownload" disabled>⬇ Baixar .SCT</button>
-      <button class="btn-secondary" id="btnReset">↺ Limpar</button>
-    </div>
+  <!-- LISTA DE DOWNLOADS POR MATERIAL -->
+  <div class="card" id="cardDownload" style="display:none">
+    <span class="card-title">Arquivos Gerados</span>
+    <div id="downloadList"></div>
   </div>
 
   <div class="divider"></div>
 
-  <footer>HC MARCENARIA — CONVERSOR SCT v0.1 — FORMATO SKETCHCUT VALIDADO</footer>
+  <div style="display:flex;justify-content:flex-end">
+    <button class="btn-secondary" id="btnReset">↺ Limpar</button>
+  </div>
+
+  <footer>HC MARCENARIA — CONVERSOR SCT v0.2 — FORMATO SKETCHCUT VALIDADO</footer>
 
 </div>
 
-<!-- Ordem de carregamento importa: parser e generator precisam estar prontos antes do ui -->
 <script src="js/parser.js"></script>
 <script src="js/generator.js"></script>
 <script src="js/ui.js"></script>
+
+<!-- Mostra o card de downloads assim que o previewWrap aparecer -->
+<script>
+  const obs = new MutationObserver(() => {
+    const visible = document.getElementById('previewWrap').classList.contains('visible');
+    document.getElementById('cardDownload').style.display = visible ? 'flex' : 'none';
+  });
+  obs.observe(document.getElementById('previewWrap'), { attributes: true });
+</script>
 
 </body>
 </html>
