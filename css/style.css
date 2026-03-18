@@ -88,8 +88,8 @@ header p {
 
 .version {
   font-family: var(--mono);
-  font-size: 10px;
-  color: var(--border);
+  font-size: 11px;
+  color: var(--muted);
   letter-spacing: 0.1em;
   margin-top: 4px;
 }
@@ -304,7 +304,7 @@ button {
 .status.err { display: block; background: rgba(192,87,74,0.1);   border: 1px solid rgba(192,87,74,0.3);  color: var(--error); }
 
 /* ─── FOOTER ────────────────────────────────────────────────────────────── */
-footer { font-family: var(--mono); font-size: 10px; color: var(--border); letter-spacing: 0.08em; text-align: center; }
+footer { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.08em; text-align: center; }
 
 .divider { height: 1px; background: var(--border); width: 100%; }
 
@@ -359,4 +359,120 @@ footer { font-family: var(--mono); font-size: 10px; color: var(--border); letter
   font-size: 11px;
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+/* ─── RESPONSIVO — MOBILE ───────────────────────────────────────────────── */
+@media (max-width: 600px) {
+
+  /* Menos padding vertical no body */
+  body {
+    padding: 24px 16px;
+  }
+
+  /* Wrap sem gap tão grande */
+  .wrap {
+    gap: 20px;
+  }
+
+  /* Header menor */
+  header h1 {
+    font-size: 22px;
+  }
+
+  header p {
+    font-size: 13px;
+  }
+
+  /* Cards com menos padding */
+  .card {
+    padding: 18px 16px;
+    gap: 16px;
+  }
+
+  /* Upload zone mais compacta — drag não faz sentido no celular */
+  .upload-zone {
+    padding: 28px 16px;
+    gap: 8px;
+  }
+
+  .upload-icon {
+    font-size: 28px;
+  }
+
+  .upload-zone .upload-text {
+    font-size: 14px;
+  }
+
+  /* Esconde o hint de arrastar no mobile */
+  .upload-zone .upload-hint {
+    display: none;
+  }
+
+  /* Tabela — fonte um pouco maior para leitura */
+  table {
+    font-size: 13px;
+  }
+
+  th, td {
+    padding: 8px 10px;
+  }
+
+  /* Summary — valores maiores para leitura rápida */
+  .summary-item .s-value {
+    font-size: 26px;
+  }
+
+  .summary-item .s-label {
+    font-size: 10px;
+  }
+
+  /* Botões maiores — área de toque confortável */
+  button {
+    font-size: 13px;
+    padding: 14px 20px;
+    min-height: 48px;
+  }
+
+  .btn-small {
+    font-size: 12px;
+    padding: 10px 14px;
+    min-height: 44px;
+  }
+
+  /* Download item — empilha em telas muito pequenas */
+  .download-item {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .download-name {
+    font-size: 12px;
+    white-space: normal;      /* permite quebrar linha no mobile */
+    word-break: break-all;
+  }
+
+  .download-count {
+    font-size: 11px;
+  }
+
+  /* Inputs maiores */
+  .field input {
+    font-size: 16px;    /* evita zoom automático do iOS */
+    padding: 12px;
+  }
+
+  .field label {
+    font-size: 12px;
+  }
+
+  /* Status com fonte maior */
+  .status {
+    font-size: 13px;
+  }
+
+  /* Footer */
+  footer {
+    font-size: 10px;
+  }
+
 }
