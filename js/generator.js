@@ -2,8 +2,7 @@
  * generator.js — Conversor SCT
  * HC Marcenaria
  *
- * Responsável por gerar o arquivo .sct compatível com o SketchCut
- * a partir da lista de peças interpretada pelo parser.
+ * Responsável por gerar o arquivo .sct compatível com o SketchCut.
  *
  * Formato validado por engenharia reversa de arquivos reais do SketchCut.
  * Detalhes técnicos documentados em: docs/formato-sct.md
@@ -17,9 +16,14 @@
  * As peças são inseridas com posição dummy (111_-1X10X10).
  * O SketchCut recalcula e reorganiza o plano ao otimizar.
  *
- * @param {Array}  pieces  - Array de objetos de peça { width, height, qty, name }
- * @param {number} sheetW  - Largura da chapa em mm (padrão: 2750)
- * @param {number} sheetH  - Altura da chapa em mm (padrão: 1850)
+ * Fitagem: campo AXB_0X0 onde:
+ *   A = valor do eixo Comprimento (calculado pelo parser)
+ *   B = valor do eixo Largura    (calculado pelo parser)
+ *   _0X0 = sulcos (não utilizado)
+ *
+ * @param {Array}  pieces  - Array de objetos { width, height, qty, edgeComp, edgeLarg }
+ * @param {number} sheetW  - Largura da chapa em mm
+ * @param {number} sheetH  - Altura da chapa em mm
  * @returns {string} Conteúdo do arquivo .sct
  */
 function generateSCT(pieces, sheetW = 2750, sheetH = 1850) {
@@ -28,7 +32,7 @@ function generateSCT(pieces, sheetW = 2750, sheetH = 1850) {
   // ── Cabeçalho ──────────────────────────────────────────────────────────
   lines.push('<V3.0>');
   lines.push('1');
-  lines.push(`${sheetW}X${sheetH}_1`);  // _1 = 1 chapa inicial (SketchCut ajusta ao recalcular)
+  lines.push(`${sheetW}X${sheetH}_1`);
   lines.push('1X4X10_True');
 
   // CRÍTICO: exatamente 5 linhas em branco — o parser do SketchCut as conta
@@ -40,19 +44,25 @@ function generateSCT(pieces, sheetW = 2750, sheetH = 1850) {
 
   lines.push('2');
   lines.push('');
-  lines.push('0.4');   // kerf: espessura da lâmina de serra
+  lines.push('0.4');
   lines.push('');
   lines.push('1');
   lines.push('');
-  lines.push('');      // linha extra que o SketchCut adiciona ao salvar
+  lines.push('');
 
   // ── Peças ───────────────────────────────────────────────────────────────
   lines.push(`<Parts>${pieces.length}`);
 
   for (const piece of pieces) {
     lines.push(`${piece.width}X${piece.height}X${piece.qty}`);
-    lines.push('0X0_0X0');   // sem restrição de fio/rotação
-    lines.push('10');        // configuração de borda padrão
+
+    // Campo de fitagem: AXB_0X0
+    // A = eixo Comprimento, B = eixo Largura, _0X0 = sulcos (fixo)
+    const edgeA = piece.edgeComp || 0;
+    const edgeB = piece.edgeLarg || 0;
+    lines.push(`${edgeA}X${edgeB}_0X0`);
+
+    lines.push('10');
 
     // Posição dummy para cada unidade — SketchCut reorganiza ao otimizar
     for (let i = 0; i < piece.qty; i++) {
@@ -64,7 +74,7 @@ function generateSCT(pieces, sheetW = 2750, sheetH = 1850) {
   lines.push('<USnips>0');
   lines.push('<NSnips>0');
 
-  // ── Rodapé (obrigatório) ─────────────────────────────────────────────────
+  // ── Rodapé obrigatório ───────────────────────────────────────────────────
   lines.push('8');
   lines.push('15');
   lines.push('4');

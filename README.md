@@ -1,9 +1,11 @@
 # Conversor SCT
 **Conversor de lista de peças (Promob) para plano de corte (SketchCut)**
 
-![Versão](https://img.shields.io/badge/versão-0.0-c8922a)
+![Versão](https://img.shields.io/badge/versão-0.3-c8922a)
 ![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
 ![Licença](https://img.shields.io/badge/licença-MIT-green)
+
+🔗 **[Acessar o app](https://converter-sct-git-master-henrique-camargos-projects.vercel.app/)**
 
 ---
 
@@ -24,7 +26,7 @@ O fluxo de trabalho em uma marcenaria que usa software de projeto é, na teoria,
 3. Gerar o plano de corte no SketchCut
 4. Cortar
 
-Na prática, o passo 2 para o 3 era **totalmente manual**. Para cada projeto, era necessário digitar peça por peça no SketchCut — dimensões, quantidade, material. Em projetos grandes, isso facilmente representa horas de trabalho repetitivo e sujeito a erros.
+Na prática, o passo 2 para o 3 era **totalmente manual**. Para cada projeto, era necessário digitar peça por peça no SketchCut — dimensões, quantidade, material, fitagem. Em projetos grandes, isso facilmente representa horas de trabalho repetitivo e sujeito a erros.
 
 ---
 
@@ -32,7 +34,7 @@ Na prática, o passo 2 para o 3 era **totalmente manual**. Para cada projeto, er
 
 O Promob exporta a lista de peças em um formato de arquivo estruturado (o mesmo reconhecido pelo CutListPlus e outros softwares do setor). O SketchCut trabalha com arquivos `.sct` para importar planos de corte.
 
-Este conversor faz a ponte entre os dois: lê o arquivo exportado pelo Promob e gera o `.sct` pronto para abrir no SketchCut. O SketchCut então recalcula e otimiza o plano automaticamente.
+Este conversor faz a ponte entre os dois: lê o arquivo exportado pelo Promob e gera os `.sct` prontos para abrir no SketchCut — separados por material, com fitagem configurada. O SketchCut então recalcula e otimiza o plano automaticamente.
 
 ---
 
@@ -41,8 +43,8 @@ Este conversor faz a ponte entre os dois: lê o arquivo exportado pelo Promob e 
 1. Abra o `index.html` no navegador
 2. No Promob, exporte a lista de peças — [PENDENTE: caminho exato no menu do Promob]
 3. Arraste o arquivo exportado para a área de upload
-4. Confira a lista de peças na tabela de preview
-5. Clique em **Baixar .SCT — 15mm** ou **18mm** conforme o material
+4. Confira a lista de peças na tabela de preview — separada por material
+5. Na seção **Arquivos Gerados**, clique em **Baixar** para cada material desejado
 6. Abra o `.sct` no SketchCut
 7. Mande recalcular o plano — o SketchCut reorganiza tudo automaticamente
 
@@ -50,25 +52,29 @@ Este conversor faz a ponte entre os dois: lê o arquivo exportado pelo Promob e 
 
 ## Funcionalidades
 
-### v0.0 (atual)
+### v0.3 (atual)
 - [x] Upload de arquivo `.txt` / `.csv`
 - [x] Parser da lista de peças do Promob
-- [x] Separação automática por espessura (15mm / 18mm)
-- [x] Preview da lista em tabela antes de exportar
+- [x] Separação automática por material (tipo + cor + espessura)
+- [x] Preview da lista em tabela com separadores por material
+- [x] Suporte a fitagem de bordas (0.4mm e 2mm, todos os lados)
 - [x] Geração do `.sct` compatível com SketchCut
-- [x] Download separado por material
+- [x] Download individual por material
 
 ---
 
 ## Roadmap
 
-| Versão | Funcionalidade |
-|--------|---------------|
-| v0.1 | Suporte a mais espessuras (25mm, 6mm...) |
-| v0.2 | Configuração de fitas de borda |
-| v0.3 | Múltiplos materiais e cores |
-| v0.4 | Histórico de conversões |
-| v1.0 | Versão estável — publicação no GitHub Pages |
+| Versão | Funcionalidade | Status |
+|--------|---------------|--------|
+| v0.0 | Conversão básica | ✅ |
+| v0.1 | Parser corrigido | ✅ |
+| v0.2 | Separação por material | ✅ |
+| v0.3 | Fitagem de bordas | ✅ |
+| v0.4 | Nomes das peças no .sct | 🔜 |
+| v0.5 | Edição da lista — adicionar, remover e editar peças | 🔜 |
+| v0.6 | Histórico de conversões | 🔜 |
+| v1.0 | Versão estável — GitHub Pages | 🔜 |
 
 ---
 
@@ -107,7 +113,7 @@ conversor-sct/
 
 A lógica de conversão e a engenharia reversa do formato `.sct` foram desenvolvidas com assistência de IA (Claude — Anthropic).
 
-O processo envolveu análise comparativa de múltiplos arquivos `.sct` gerados pelo próprio SketchCut para identificar a estrutura exata do formato — incluindo detalhes críticos como número de linhas em branco no cabeçalho e comportamento do software ao recalcular posições.
+O processo envolveu análise comparativa de múltiplos arquivos `.sct` gerados pelo próprio SketchCut — incluindo testes específicos para mapear o formato de fitagem de bordas campo a campo.
 
 A interface e a identidade visual do projeto são de autoria do desenvolvedor.
 
@@ -116,7 +122,7 @@ A interface e a identidade visual do projeto são de autoria do desenvolvedor.
 ## Autor
 
 **Henrique** — HC Marcenaria  
-Projeto iniciado em 2025 como solução interna, evoluindo para ferramenta open source.
+Projeto iniciado como solução interna para automatizar o fluxo Promob → SketchCut.
 
 ---
 
